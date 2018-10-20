@@ -7,7 +7,7 @@ function [p,x_start,t_start,t_stop,max_dt_FE] = getParam_2DHeating(dx,dy,Nx,Ny,t
 
 gamma =0.1; %thermal capacitance per unit length of the bar
 km    =0.1; %thermal conductance through metal per unit length of the bar
-Rair  =100; %thermal resistance to air 
+Rair  = 100; %thermal resistance to air 
 RcTissue     = (1/km)*dx*dy; %resistance of tissue
 RcTumor       = (1/km)*dx*dy*.1;
 Cstore = gamma*dx*dy; %the longer the section the larger the storage

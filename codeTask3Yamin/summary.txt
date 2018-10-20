@@ -1,0 +1,58 @@
+~~~~~~~
+2D CASE
+~~~~~~~
+Max Iterations: 1000
+Tolerance: 1e-6
+~N = 25 
+
+        A\b: .021 s, N/A 
+        TGCR:.16 s, 177 iterations
+        TGCR Jacobi:  .08 s, 92 iterations
+        TGCR Tridiag: .053 s, 72 iterations
+        TGCR Lowdiag: .031 s, 53 iterations
+
+~N = 50
+
+        A\b: .18 s, N/A 
+        TGCR: 1.89 s, 314 iterations
+        TGCR Jacobi: .83 s, 164 iterations
+        TGCR Tridiag: .55 s, 119 iterations
+        TGCR Lowdiag: .53 s, 111 iterations
+
+~N = 100 
+
+        A\b: 9.5 s, N/A 
+        TGCR: 27.3 s, 405 iterations
+        TGCR Jacobi: 29 s, 276 iterations
+        TGCR Tridiag: 13.6 s, 205 iterations
+        TGCR Lowdiag: 13.0 s, 211 iterations
+
+~~~~~~~
+3D CASE
+~~~~~~~
+~N = 10 
+
+        A\b: .032 s, N/A 
+        TGCR: .051 s, 43 iterations
+        TGCR Jacobi: .056 s, 41 iterations
+        TGCR Tridiag: .050 s, 40 iterations
+        TGCR Lowdiag: .030 s, 26 iterations
+
+~N = 17 
+
+        A\b: 1.36 s, N/A 
+        TGCR: 1.11 s, 69 iterations
+        TGCR Jacobi: 1.24 s, 67 iterations
+        TGCR Tridiag: 1.09 s, 62 iterations
+        TGCR Lowdiag: .813 s, 47 iterations
+
+
+~N = 22 
+
+        A\b: 14.8 s, N/A 
+        TGCR: 7.07 s, 87 iterations
+        TGCR Jacobi: 9.60 s, 85 iterations
+        TGCR Tridiag: 9.20 s, 73 iterations
+        TGCR Lowdiag: 6.7 s, 55 iterations
+
+
