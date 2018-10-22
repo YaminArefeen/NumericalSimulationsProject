@@ -11,7 +11,7 @@ addpath([newdir '/codeTask1']); %add appropriate directory
 addpath Utils
 %for previous task
 %% GENERATING A NODAL MATRIX
-dim_flag = 3;
+dim_flag = 2;
 %Dimension of the brain that we want to creat a nodal matrix fore
 %1 => 1D, $2 => 2D, $3 => 3D
 
