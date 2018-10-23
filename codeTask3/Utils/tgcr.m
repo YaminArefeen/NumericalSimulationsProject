@@ -1,4 +1,4 @@
-function [x, r_norms] = tgcr(M,b,tol,maxiters)
+function [x, r_norms, iter] = tgcr(M,b,tol,maxiters)
 % Generalized conjugate residual method for solving Mx = b
 % INPUTS
 % M - matrix

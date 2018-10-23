@@ -11,7 +11,7 @@ addpath([newdir '/codeTask1']); %add appropriate directory
 addpath Utils
 %for previous task
 %% GENERATING A NODAL MATRIX
-dim_flag = 2;
+dim_flag = 3;
 %Dimension of the brain that we want to creat a nodal matrix fore
 %1 => 1D, $2 => 2D, $3 => 3D
 
@@ -70,7 +70,7 @@ tol = 1e-6;
 maxiters = 1000;
 
 tic
-[x,r_norms] = tgcr(A,b,tol,maxiters);
+[x,r_norms,iters] = tgcr(A,b,tol,maxiters);
 tgcr_time = toc;
 
 if(visualize)
@@ -98,7 +98,7 @@ for ii = 1:3 %Test each preconditioner
 
     %solve system with preconditioner
     tic
-    [x_p,r_norms_p] = tgcr_P(A,b,tol,maxiters,A_hat);
+    [x_p,r_norms_p, iters_p] = tgcr_P(A,b,tol,maxiters,A_hat);
     precon_time(ii) = toc;
     
     if(visualize)

@@ -1,4 +1,4 @@
-function estimate_bounds(A,tol)
+function [te, cc] = estimate_bounds(A,tol)
 
 % start with the Gershgorin Circle Estimation
 true_small = 100;
@@ -36,6 +36,7 @@ gc_bound = log(tol/2)/log(fr);
 
 disp('The true eigenstuff Bound is: ');
 disp(gc_bound);
+te = gc_bound;
 
 % with condest
 V = condest(sparse(A));
@@ -45,5 +46,6 @@ gc_bound = log(tol/2)/log(fr);
 
 disp('The condest Bound is: ');
 disp(gc_bound);
+cc = gc_bound;
 
 end
