@@ -11,19 +11,19 @@ addpath([newdir '/codeTask1']); %add appropriate directory
 addpath Utils
 %for previous task
 %% GENERATING A NODAL MATRIX
-dim_flag = 3;
+dim_flag = 2;
 %Dimension of the brain that we want to creat a nodal matrix fore
 %1 => 1D, $2 => 2D, $3 => 3D
 
-visualize = 0; %If we want to visualize or results 
+visualize = 1; %If we want to visualize or results 
 
 switch(dim_flag)
     case 1
         %Generate a 1D nodal Matrix
     case 2
         %Generate a 2D nodal Matrix
-        Nx= 100; %Nodes in x direction
-        Ny= 100; %Nodes in y direction
+        Nx= 25; %Nodes in x direction
+        Ny= 25; %Nodes in y direction
         dx = 1; %Dicretization in x direction
         dy = 1; %Dicretization in y direction
         

@@ -65,7 +65,7 @@ idx=(floor(Ny/2))*Nx+ceil(Nx/2);
 p.B(idx,1)= 1;
 
 
-p.A     = -p.A/Cstore; % note this will give a 1/dz^2 in A
+p.A     = p.A/Cstore; % note this will give a 1/dz^2 in A
 							  % also pay attention to the negative sign
 p.B     = p.B/Cstore;  % note this is important to make sure results
                        % will not depend on the number of sections N
