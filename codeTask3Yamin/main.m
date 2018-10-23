@@ -22,8 +22,8 @@ switch(dim_flag)
         %Generate a 1D nodal Matrix
     case 2
         %Generate a 2D nodal Matrix
-        Nx= 25; %Nodes in x direction
-        Ny= 25; %Nodes in y direction
+        Nx= 75; %Nodes in x direction
+        Ny= 75; %Nodes in y direction
         dx = 1; %Dicretization in x direction
         dy = 1; %Dicretization in y direction
         
@@ -119,13 +119,7 @@ end
 tic
 A\b;
 AbsB_time = toc;
-%% Using Matlab's PCG function just for fun
-tic
-x_mat = gmres(A,b,[],tol,maxiters);
-gmres_time = toc;
-
 %% Displaying all times
 disp(['TGCR: ' num2str(tgcr_time) ])
 disp(['TGCR_P: ' num2str(precon_time)])
 disp(['AbsB: ' num2str(AbsB_time)]) 
-disp(['GMRES: ' num2str(gmres_time)])
