@@ -1,0 +1,36 @@
+This file contains a basic analysis of the convergence of our project's nodal matrix in both 2D and 3D:
+
+## 2D Case 100x100
+Using condest and the ChebyChev bound, we can estimate that to get 1e-6 accuracy would require at least 2010 iterations, where the condition number is 7676.5.
+
+Using the Gershgorin Cricle theroem, we estimate the smallest eigenvalue to be an incredibly small number; indeed that is is negative. This could imply a nontrivial number of iterations required in order to converge by this property. Using the true eigenstuff, we find the values to be -79.2028 and -0.0014 (with the cricle theorem we estimate -80 and 0). The resulting bound, assuming that it can be calculated and assuming the the "large" eigenvalue is -80 and the small eigenvalue is near 0, is 1696 iterations.
+
+GCR without a preconditioner, converged in 405 iterations.
+
+------ 
+The matrix formed by inv(A)*A is now analyzed for the following preconditioners:
+
+Lower Triangular: condest ChebyChev bound is 1661 iterations. GCR is 211.
+Tridiagonal: condest ChebyChev bound is 1795 iterations. True eigenvalue bound is 502 iterations. GCR is 205.
+Jacobi: condest ChebyChev bound is 2478 iterations. True eigenvalue bound is 710 iterations. GCR is 276.
+
+------
+For completeness, a graphic of N and the three bounds is provided.
+
+
+## 3D Case: 22x22x22 cube
+Using condest and the ChebyChev bound, we can estimate that to get 1e-6 accuracy would require at least 268 iterations, where the condition number is 1363.4.
+
+Using the Gershgorin Circle bound, we find our estimate for the smallest eigenvalue is actually 0, which we know means that there will be a large number of iterations that will be estimated; we can find using matlab the true values of the smallest and largest eigenvalues, and see that the smallest eigenvalue is 0.0146, which is quite close to 0. Using the true values of the eigenstuff, we find that we require 208 iterations.
+
+With just the TGCR metric, without a preconditioner, we require 87 iterations; a fair sight better than the two best estimates we can make.
+
+-------
+The matrix formed by inv(A)*A is now analyzed for the following preconditioners:
+
+Lower Triangular: condest ChebyChev bound is 196 iterations. GCR is 55.
+Tridiagonal: condest ChebyChev bound is 227 iterations. True eigenvalue bound is 166 iterations. GCR is 73.
+Jacobi: condest ChebyChev bound is 274 iterations. True eigenvalue bound is 204 iterations. GCR is 85.
+
+--------
+For completeness, a graphic of N and the three bounds is provided.
