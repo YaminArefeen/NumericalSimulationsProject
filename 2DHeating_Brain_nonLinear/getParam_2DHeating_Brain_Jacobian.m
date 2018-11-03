@@ -1,4 +1,4 @@
-function [F,J,p,x_start,t_start,t_stop,max_dt_FE] = getParam_2DHeating_Brain_Jacobian(T,dx,dy,Nx,Ny,mask,location_tumor)
+function [p] = getParam_2DHeating_Brain_Jacobian(dx,dy,Nx,Ny,mask,location_tumor)
 
 % Luca Daniel, MIT 2018 heatbar
 % modified by Zijing 2018/10/21
@@ -21,7 +21,6 @@ N = sum(tissue_list(:));  % total number of nodes, air pixels are just ground
 index_image = zeros(size(mask));
 index_image(tissue_list)=1:N;    % the index of nodes
 p.A = zeros(N,N);
-p.J = zeros(N,N);
 % coupling resistors Rc between (x,y) and (x+1,y), (x,y+1), also dectect
 % air pixels around (x,y)
 for x = 2:Nx-1
@@ -84,48 +83,19 @@ for x = 2:Nx-1
             
             if mask(x,y)==4  
                 p.A(index,index) = p.A(index,index) + 1/RcVessel_air;
-            end
-            
-            if mask(x,y)>2
-                p.J(index,index) = p.J(index,index) + dx^2*(exp(-T(x,y))+exp(T(x,y)));
-            end
-            
+            end            
         end
     end
 end
-
-
 % leakage resistor Rair between edge points and air
 
-p.sqd   = eye(N,1);
 p.B     = zeros(N,1);
 idx=index_image(location_tumor(1),location_tumor(2));
 p.B(idx,1)= 100;
-
 
 p.A     = -p.A/Cstore; % note this will give a 1/dz^2 in A
 							  % also pay attention to the negative sign
 p.B     = p.B/Cstore;  % note this is important to make sure results
                        % will not depend on the number of sections N
-   
-p.J= p.J+ p.A;
-T=T(mask>0);
-tmp=zeros(size(T));
-tmp(T~=0)=T(T~=0);
-sigma_non=1e-2;
-p.F= p.A*T(:)+(dx^2*(exp(sigma_non*tmp(:))-exp(-sigma_non*tmp(:))))+p.B;
-
-x_start = zeros(N,1);
-t_start = 0;
-
-% slowest_timeconstant = min(abs(eig(p.A)));
-% fastest_timeconstant = max(abs(eig(p.A)));
-
-% to see steady state need to wait until the slowest mode settles
-t_stop = 2000;
-
-% usually Forward Euler is unstable for timestep>2/fastest_timeconstant
-max_dt_FE = 0.1;
-
-J=p.J;
-F=p.F;
+p.mask  = mask;     
+p.dx2 = dx*dy;

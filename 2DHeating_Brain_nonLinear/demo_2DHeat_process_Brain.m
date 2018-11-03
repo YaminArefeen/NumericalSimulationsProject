@@ -42,38 +42,41 @@ load('mask.mat')
 %%
 % location_tumor = [42,42];
 location_tumor = [47,41];
-T=zeros(Nx,Ny);
-[F,J,p,x_start,t_start,t_stop,max_dt_FE] = getParam_2DHeating_Brain_Jacobian(T+273+37,1,1,Nx,Ny,mask,location_tumor);
-
-Func = @(T)  getParam_2DHeating_Brain_Jacobian(T,1,1,Nx,Ny,mask,location_tumor);
+% location_tumor = [13,11]; %LOWER RES LOCATION (16,16) for testing
+[p] = getParam_2DHeating_Brain_Jacobian(1,1,Nx,Ny,mask,location_tumor);
 %%
-% eval_f = 'eval_Jf_nonLinearSystem';
-eval_f = 'eval_f_nonLinearSystem';
+sigma = 1e-2; %scaling for our nonlinear term.
+F = @(T) eval_f_nonlinearSystem(T,p,sigma);
 
-% eval_f = 'eval_f_LinearSystem';
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% Initializing Forward Euler Parameters
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+x_start = zeros(size(p.A,1),1); 
+%Initial tempeatures, assuming we are starting all temperatures
+%at 0, whatever our convention for 0 is.
+timestep=0.001; %FE time step
+t_start = 0; %FE start time
+t_stop=1; %FE stop time
+max_temp=10; %Maximum temperature we will allow our system to reach
+visualize=20; %Flag indicating wheter we wish to visualize
+step_interval_show=200;   
+% the time interval of image update ( 1 updata/ N steps )
+[X] = ForwardEuler2D_Brain(F,x_start,t_start,t_stop,timestep,T1_image,brainmask,max_temp,step_interval_show,visualize);
+%% Checking Analytic and Finite differences Jacobian
+eps = 1; %perturbation for FID jacobian.
+% x_test = rand(size(x_start)); %try random inputs for testing
+% x_test = zeros(size(x_start));
+x_test = X;
 
-% figure; imagesc(p.A);
-p.Nx=Nx;
-p.Ny=Ny;
-% test FE function
-timestep=0.001;
-t_stop=100000;
-max_temp=10;
-visualize=20;
-step_interval_show=1;   % the time interval of image update ( 1 updata/ N steps )
-[X] = ForwardEuler2D_Brain(eval_f,x_start,eval_u,Func,t_start,t_stop,timestep,T1_image,brainmask,max_temp,step_interval_show,visualize);
-%% Jacobian Calculation
-Jf_analytic = eval_Jf_LinearSystem(x_start,1,p);
-dx=0.001;
-N=size(p.A,1);
-Jf_Dif=zeros(N);
-for i=1:N
-    x_new=x_start;
-    x_new(i)=x_new(i)+dx;
-    temp=(eval_f_LinearSystem(x_new,1,p)-eval_f_LinearSystem(x_start,1,p))./dx;
-    Jf_Dif(:,i)=temp;
-end
+Jf_analytic = eval_Jf_nonlinearSystem(x_test,p,sigma);
+Jf_Dif = eval_J_fid(F,x_test,eps);
+
+%calculating error based on a voxel by voxel basis
 error=Jf_analytic-Jf_Dif;
-disp(mean(error(:)));
+disp(mean(error(:)))
+
+%calculating error by vectorizing our Jacobians
+error2 = norm(Jf_analytic(:) - Jf_Dif(:))/norm(Jf_analytic(:));
+disp(error2)
 
 

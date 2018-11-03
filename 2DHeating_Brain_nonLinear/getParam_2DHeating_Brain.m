@@ -1,4 +1,4 @@
-function [p,x_start,t_start,t_stop,max_dt_FE] = getParam_2DHeating_Brain(dx,dy,Nx,Ny,mask,location_tumor)
+function [p] = getParam_2DHeating_Brain(dx,dy,Nx,Ny,mask,location_tumor)
 
 % Luca Daniel, MIT 2018 heatbar
 % modified by Zijing 2018/10/21
@@ -75,16 +75,4 @@ p.B(idx,1)= 10;
 p.A     = -p.A/Cstore; % note this will give a 1/dz^2 in A
 							  % also pay attention to the negative sign
 p.B     = p.B/Cstore;  % note this is important to make sure results
-                       % will not depend on the number of sections N
-      
-x_start = zeros(N,1);
-t_start = 0;
-
-% slowest_timeconstant = min(abs(eig(p.A)));
-% fastest_timeconstant = max(abs(eig(p.A)));
-
-% to see steady state need to wait until the slowest mode settles
-t_stop = 2000;
-
-% usually Forward Euler is unstable for timestep>2/fastest_timeconstant
-max_dt_FE = 0.1;
+                       % will not depend on the number of sections N      
