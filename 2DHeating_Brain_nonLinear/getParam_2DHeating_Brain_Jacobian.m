@@ -11,7 +11,7 @@ Rair  =100; %thermal resistance to air
 RcTissue     = (1/km)*dx*dy*1; %resistance of tissue
 RcTumor       = (1/km)*dx*dy*0.1;
 RcVessel_air       = (1/km)*dx*dy*0.01;
-RcVessel_V       = (1/km)*dx*dy*0.05;
+RcVessel_V       = (1/km)*dx*dy*0.01;
 
 Cstore = gamma*dx*dy; %the longer the section the larger the storage
      
@@ -38,35 +38,39 @@ for x = 2:Nx-1
             elseif (mask(x,y)==2)
                 Rc = RcTissue;
             elseif (mask(x,y)==3 || mask(x,y)==4)
-                Rc = RcTissue;
+                Rc = RcVessel_V;
             end
             
             % build resistor connection
-            if (mask(x+1,y)>0)&&( (mask(x+1,y)<3) || ((mask(x,y)>0)&&(mask(x,y)<3)))        
+            if (mask(x+1,y)>0)
+%             if (mask(x+1,y)>0)&&( (mask(x+1,y)<3) || ((mask(x,y)>0)&&(mask(x,y)<3)))
+                Rc = resistor_lookup(mask(x,y), mask(x+1,y),RcTumor, RcTissue,RcVessel_V);
                 p.A(index,index) = p.A(index,index)+(+1/Rc);
                 p.A(index,index_1) = p.A(index,index_1)+(-1/Rc);
                 p.A(index_1,index) = p.A(index_1,index)+(-1/Rc);
                 p.A(index_1,index_1) = p.A(index_1,index_1)+(+1/Rc);
             end
-            if (mask(x,y+1)>0)&&( (mask(x,y+1)<3) || ((mask(x,y)>0)&&(mask(x,y)<3)))        
+            if (mask(x,y+1)>0)
+%             if (mask(x,y+1)>0)&&( (mask(x,y+1)<3) || ((mask(x,y)>0)&&(mask(x,y)<3)))
+                Rc = resistor_lookup(mask(x,y), mask(x,y+1),RcTumor,RcTissue,RcVessel_V);
                 p.A(index,index) = p.A(index,index)+(+1/Rc);
                 p.A(index,index_2) = p.A(index,index_2)+(-1/Rc);
                 p.A(index_2,index) = p.A(index_2,index)+(-1/Rc);
                 p.A(index_2,index_2) = p.A(index_2,index_2)+(+1/Rc);
             end
             
-            if (mask(x+1,y)>2)&&(mask(x,y)>2)  
-                p.A(index,index) = p.A(index,index)+(+1/RcVessel_V);
-                p.A(index,index_1) = p.A(index,index_1)+(-1/RcVessel_V);
-                p.A(index_1,index) = p.A(index_1,index)+(-1/RcVessel_V);
-                p.A(index_1,index_1) = p.A(index_1,index_1)+(+1/RcVessel_V);
-            end
-            if (mask(x,y+1)>2)&&(mask(x,y)>2)  
-                p.A(index,index) = p.A(index,index)+(+1/RcVessel_V);
-                p.A(index,index_2) = p.A(index,index_2)+(-1/RcVessel_V);
-                p.A(index_2,index) = p.A(index_2,index)+(-1/RcVessel_V);
-                p.A(index_2,index_2) = p.A(index_2,index_2)+(+1/RcVessel_V);
-            end
+%             if (mask(x+1,y)>2)&&(mask(x,y)>2)  
+%                 p.A(index,index) = p.A(index,index)+(+1/RcVessel_V);
+%                 p.A(index,index_1) = p.A(index,index_1)+(-1/RcVessel_V);
+%                 p.A(index_1,index) = p.A(index_1,index)+(-1/RcVessel_V);
+%                 p.A(index_1,index_1) = p.A(index_1,index_1)+(+1/RcVessel_V);
+%             end
+%             if (mask(x,y+1)>2)&&(mask(x,y)>2)  
+%                 p.A(index,index) = p.A(index,index)+(+1/RcVessel_V);
+%                 p.A(index,index_2) = p.A(index,index_2)+(-1/RcVessel_V);
+%                 p.A(index_2,index) = p.A(index_2,index)+(-1/RcVessel_V);
+%                 p.A(index_2,index_2) = p.A(index_2,index_2)+(+1/RcVessel_V);
+%             end
             
             if index_1==0  
                 p.A(index,index) = p.A(index,index) + 1/Rair;

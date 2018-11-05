@@ -56,7 +56,7 @@ x_start = zeros(size(p.A,1),1);
 %at 0, whatever our convention for 0 is.
 timestep=0.001; %FE time step
 t_start = 0; %FE start time
-t_stop=7; %FE stop time
+t_stop=10; %FE stop time
 max_temp=10; %Maximum temperature we will allow our system to reach
 visualize=20; %Flag indicating wheter we wish to visualize
 step_interval_show=200;   
@@ -81,21 +81,13 @@ error2 = norm(Jf_analytic(:) - Jf_Dif(:))/norm(Jf_analytic(:));
 disp(error2)
 
 %% Running a nonlinear solver on the system
-tol = 10^-11;
-maxiters = 5000;
-% [Tf] = NewtonSolve(F,x_start,p,sigma,tol,maxiters);
-% [Tf] = NewtonSolveHomotopy(F,x_start,p,sigma,tol,maxiters);
-[Tf] = NewtonSolveGCR(F,x_start,p,sigma,tol,maxiters,eps,1e-11);
+tol = 10^-10;
+maxiters = 1000;
+[Tf] = NewtonSolve(F,x_start,p,sigma,tol,maxiters);
 figure;
-T1_image=T1_image-min(T1_image(:));
-T1_image=T1_image./max(T1_image(:));
-imshow(T1_image,[0 1],'InitialMag', 'fit'); 
-colormap('gray');
-hold on;
 Temperature_im=zeros([size(T1_image),3]);
 Temperature_im(brainmask)=Tf;
 h=imshow(Temperature_im);
-max_temp = max(max(Temperature_im(:,:,1)));
 set(h, 'AlphaData', Temperature_im(:,:,1)/max_temp);
 drawnow; 
 

@@ -30,6 +30,7 @@ for n=1:ceil((t_stop-t_start)/timestep)
        imshow(T1_image,[0 1],'InitialMag', 'fit'); colormap('gray');
        hold on
        h=imshow(Temperature_im);
+       max_temp = max(max(Temperature_im(:,:,1)));
        set(h, 'AlphaData', Temperature_im(:,:,1)/max_temp); title(['Time at ',num2str(t)]);
        drawnow;       
        hold on
