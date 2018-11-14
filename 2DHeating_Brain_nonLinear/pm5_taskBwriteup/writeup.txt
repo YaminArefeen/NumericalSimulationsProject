@@ -1,0 +1,47 @@
+In order to compute the reference steady state solution, we utilized our newton solver from the previous project milestone.  Then, in order to evaluate the performance of our integration algorithms, we wanted to see how close the integrated solution was to the steady state solution after a certain amount of time.  
+
+Note, we did not record a reference solution at each timestep of the integration.  For our forward euler algorith to remain stable, we needed tp pick dt <= .001.  In order to achieve a steady state solution, one must integrate beyond T = 500.  This would take an unreasonable amount of time, thus I used how close the integrated solution was to the steady state solution after a certain amount of time as a metric of comparison between the methods.  
+
+For the rest of these experiments, we will aim to achieve 10% accuracy, in comparison to the final steady state solution.    
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Exploring Accuracy of Forward Euler (FE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-For any value of d_t beyond .001, FE becomes unstable.  When setting dt = .001, Forward Euler converges to within 10% residual of our desired steady state solution at T = 220. On my macbook air, this FE integration took 1080 seconds (18 minutes) to compute. 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Comparing TRAP time to FE time
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-I utilized my TRAP integration method implemented from the previous problem set and I set dt = 1. The integration then converged to within 10% of the steady state solution at time T = 224.  Thus, we have clearly traded off some accuracy, as the FE method converged to within 10% accuracy at T = 215. 
+
+-However, this trapezoidal integration only took 100 seconds to simulate, an order of magnitude faster than the FE simulation.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~
+Implementing Dynamic TRAP
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-I adjusted my TRAP function to include dynamic d_t adjustment.  In addition, I set the maximum d_t to be 10.  
+
+-Again, with increasing the d_t even more, we trade off some accuracy, as our integrator achieves a solution with 10% of the steady state solution at t = 244.  In comparison to T = 224 for the non-dynamic dt = 1 trapezoidal integration and T = 215 for the FE integration. 
+
+-However, we now integrate in only 10 seconds, which is a order of magnitude faster than nondynamic trap integration, and two orders of magnitude faster than forward euler integration.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Discussion on which one we prefer for our problem
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+~From a purely speed based point of view, it dynamic TRAP would be the best method, as it is just so much faster than forward euler.  However, we motivated our project with the goal of providing accurate simulations for clinicians when they are considering whether or not they should provide thermal therapy to a patient. Thus, some degree of accuracy is critically important in this sort of application.
+
+~In order to make a more educated decision on whether one what integration scheme to use, one would first need to understand what level of error the simulation could get away with without being dangerous for the patient.  I would then choose which ever scheme integrates more quickly. 
+
+~For example, if we needed our simulation to be incredibly precise such that we need a small d_t, it may be worth using Forward euler, as trapezoidal integration loses its benefit of speed.
+
+~On the other hand if we can get away with a degree of accuracy which allows ups to pick a larger d_t such that trap integration is faster than forward euler integration, trap integration would be the obvious choice.
+
+~Based on my current knowledge of patient safety and heating, I honestly feel most comfortable using FE with an incredibly small dt, and just accepting the fact that the simulation may take a long time.  
+
+ 
+
+

@@ -81,11 +81,13 @@ error2 = norm(Jf_analytic(:) - Jf_Dif(:))/norm(Jf_analytic(:));
 disp(error2)
 
 %% Running a nonlinear solver on the system
-tol = 10^-11;
+tol = 1e-11;
+gcr_tol = 1e-11;
 maxiters = 5000;
-% [Tf] = NewtonSolve(F,x_start,p,sigma,tol,maxiters);
+[Tf] = NewtonSolve(F,x_start,p,sigma,tol,maxiters);
 % [Tf] = NewtonSolveHomotopy(F,x_start,p,sigma,tol,maxiters);
-[Tf] = NewtonSolveGCR(F,x_start,p,sigma,tol,maxiters,eps,1e-11);
+% [Tf] = NewtonSolveGCR(F,x_start,p,sigma,tol,maxiters,eps,gcr_tol);
+
 figure;
 T1_image=T1_image-min(T1_image(:));
 T1_image=T1_image./max(T1_image(:));

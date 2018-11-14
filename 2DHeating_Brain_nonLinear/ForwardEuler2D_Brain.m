@@ -20,11 +20,18 @@ if visualize
 end
 
 num=1;
-for n=1:ceil((t_stop-t_start)/timestep)
+
+num_time_steps = ceil((t_stop-t_start)/timestep);
+% all_X = zeros(length(X),num_time_steps);
+%store all of our states over time
+
+for n=1:num_time_steps
    t = t + timestep;
    X = X +  timestep * F(X);
+%    all_X(:,n) = X;
    num=num+1;
    if mod(num,step_interval_show)==0
+       fprintf('Time: %d\n',t)
    if visualize
        Temperature_im(brainmask)=X;
        imshow(T1_image,[0 1],'InitialMag', 'fit'); colormap('gray');

@@ -22,8 +22,8 @@ switch(dim_flag)
         %Generate a 1D nodal Matrix
     case 2
         %Generate a 2D nodal Matrix
-        Nx= 75; %Nodes in x direction
-        Ny= 75; %Nodes in y direction
+        Nx= 35; %Nodes in x direction
+        Ny= 35; %Nodes in y direction
         dx = 1; %Dicretization in x direction
         dy = 1; %Dicretization in y direction
         

@@ -95,7 +95,7 @@ end
 
 p.B     = zeros(N,1);
 idx=index_image(location_tumor(1),location_tumor(2));
-p.B(idx,1)= 100;
+p.B(idx,1)= 1e-3;
 
 p.A     = -p.A/Cstore; % note this will give a 1/dz^2 in A
 							  % also pay attention to the negative sign

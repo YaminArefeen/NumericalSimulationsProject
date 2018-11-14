@@ -2,7 +2,6 @@ function [x0] = NewtonSolveHomotopy(F,x0,p,sigma,tol,maxiters)
     q0 = 0;
     G = @(x,q) q*F(x) + (1-q)*x;
     for iter=1:maxiters
-        iter
         f = G(x0,q0);
         J = q0*eval_Jf_nonlinearSystem(x0,p,sigma) + (1-q0)*eye(size(p.A));
         dx = -f.'/J;
