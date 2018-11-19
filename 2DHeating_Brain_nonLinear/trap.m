@@ -48,9 +48,10 @@ for ii = 1:num_iters %loop while t is less than total desired time
     x = solutions(:,end); %recall newtonNd returns all solutions
     all_x(:,ii) = x; %keep track of solutions over time
     
-    fprintf('Time: %d',t)
+%     fprintf('Time: %d',t)
 
     if(acc_flag) %if we have a reference, check accuracy
+        fprintf('Time: %d',t)
         accuracy = norm(x_ref-x)/norm(x_ref);
         fprintf('|| Accuracy: %f\n',accuracy)
         
