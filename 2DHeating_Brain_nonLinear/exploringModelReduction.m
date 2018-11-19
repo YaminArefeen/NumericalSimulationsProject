@@ -75,8 +75,8 @@ dt_trap=0.5;
 %Calculate the reduced system
 p.c=ones(size(p.B,1),1);
 p.c=diag(p.c);
-q=500;
-type_trunc=2; %choose from residue:0, combo:1, slow:2, fast:3
+q=1000;
+type_trunc=0; %choose from residue:0, combo:1, slow:2, fast:3
 [rA, rb, rc] = getReducedEigSystem(p.A, p.B, p.c, q, type_trunc);
 
 m = p;
@@ -101,11 +101,13 @@ Temperature_im(brainmask)=y1(:,end);
 Temperature_ref=zeros(Nx,Ny);
 Temperature_ref(brainmask)=x_ref(:,end);
 figure;
+title('Reduced System: Slowest Modes')
 h=imshow(Temperature_im);
 max_temp = max(max(Temperature_im(:,:,1)));
 set(h, 'AlphaData', Temperature_im(:,:,1)/max_temp);
 drawnow;
 figure;
+title('Full System')
 h=imshow(Temperature_ref);
 max_temp = max(max(Temperature_ref(:,:,1)));
 set(h, 'AlphaData', Temperature_ref(:,:,1)/max_temp);

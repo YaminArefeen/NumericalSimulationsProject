@@ -33,11 +33,13 @@ p.Nx=Nx;
 p.Ny=Ny;
 % test FE function
 timestep=0.001;
-t_stop=5;
+t_stop=10;
 max_temp=10;
-visualize=1;
+visualize=0;
 step_interval_show=50;   % the time interval of image update ( 1 updata/ N steps )
+tic
 [X] = ForwardEuler2D_Brain_POD(eval_f,x_start,eval_u,p,t_start,t_stop,timestep,T1_image,brainmask,max_temp,step_interval_show,visualize);
+toc
 X_ref = X;
 %% Eigenvalue Mode Reduction
 
@@ -49,11 +51,12 @@ p.c=diag(p.c);
 c = p.c;
 
 % Select the reduction
-q=size(A);
-q=1000;
+% q=size(A);
+q=102;
+type_trunc=4; %choose from residue:0, combo:1, slow:2, fast:3, halfhalf:4
 
 % Determine the reduced system parameters
-[rA, rb, rc] = getReducedEigSystem(A,b,c,q);
+[rA, rb, rc] = getReducedEigSystem(A,b,c,q,type_trunc);
 
 %%
 

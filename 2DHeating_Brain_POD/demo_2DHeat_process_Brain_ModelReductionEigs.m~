@@ -52,6 +52,7 @@ c = p.c;
 q=size(A);
 q=1000;
 
+
 % Determine the reduced system parameters
 [rA, rb, rc] = getReducedEigSystem(A,b,c,q);
 
