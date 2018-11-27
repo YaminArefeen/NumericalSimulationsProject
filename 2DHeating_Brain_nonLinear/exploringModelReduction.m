@@ -36,8 +36,8 @@ load('mask.mat')
 location_tumor = [47,41];
 [p] = getParam_2DHeating_Brain_Jacobian(1,1,Nx,Ny,mask,location_tumor);
 
-sigma = 1e-2; %scaling for our nonlinear term.
-F_jac = @(T,t) evalRedSysandJac(T,p,sigma);
+sigma = 1e-1; %scaling for our nonlinear term.
+F_jac = @(T,t) evalSysandJac(T,p,sigma);
 %forward function which evaluates our system and Jaobian
 F_nojac = @(T,t) eval_f_LinearSystem(T,p,sigma);
 %forward function which evaluates just our system.
@@ -69,7 +69,7 @@ plot(trap_x(:,end))
 hold on
 plot(x_ref)
 
-%% 3) Demonstrate the TRAP solver for the reduced system
+%% 3) Demonstrate the TRAP solver for the Eig reduced system
 dt_trap=0.5;
 
 %Calculate the reduced system
@@ -104,6 +104,167 @@ figure;
 title('Reduced System: Slowest Modes')
 h=imshow(Temperature_im);
 max_temp = max(max(Temperature_im(:,:,1)));
+set(h, 'AlphaData', Temperature_im(:,:,1)/max_temp);
+drawnow;
+figure;
+title('Full System')
+h=imshow(Temperature_ref);
+max_temp = max(max(Temperature_ref(:,:,1)));
+set(h, 'AlphaData', Temperature_ref(:,:,1)/max_temp);
+drawnow;
+
+%% 4) Demonstrate the TRAP solver for the Truncated Balanced Realization (TBR) reduced system
+dt_trap=0.5;
+
+%Calculate the reduced system
+p.c=ones(size(p.B,1),1);
+p.c=diag(p.c);
+q=5;
+tic;
+syst = ss(p.A, p.B, p.c', 0);
+systred = reduce(syst, q);
+
+m = p;
+m.A = systred.A;
+m.B = systred.B;
+m.c = systred.C;
+
+Fr_jac = @(T,t) evalRedSysandJac(T,m,sigma);
+%forward function which evaluates our system and Jaobian
+
+xr_start = zeros(size(m.A,1),1); 
+
+trap_xr = trap(xr_start,dt_trap,t_stop,Fr_jac,tolerances_newt);
+y1 = systred.C*trap_xr;
+toc;
+norm(x_ref(:,end)-y1(:,end),1)
+
+Temperature_im=zeros(Nx,Ny);
+Temperature_im(brainmask)=y1(:,end);
+Temperature_ref=zeros(Nx,Ny);
+Temperature_ref(brainmask)=x_ref(:,end);
+figure;
+title('Reduced System: TBR')
+h=imshow(Temperature_im);
+max_temp = max(max(Temperature_im(:,:,1)));
+set(h, 'AlphaData', Temperature_im(:,:,1)/max_temp);
+drawnow;
+figure;
+title('Full System')
+h=imshow(Temperature_ref);
+max_temp = max(max(Temperature_ref(:,:,1)));
+set(h, 'AlphaData', Temperature_ref(:,:,1)/max_temp);
+drawnow;
+
+%% 5) Demonstrate the TRAP solver for the Moment Matching reduced system
+dt_trap=0.5;
+
+%Calculate the reduced system
+p.c=ones(size(p.B,1),1);
+p.c=diag(p.c);
+q=2;
+tic;
+V(:,1) = (p.A\p.B)/norm(p.A\p.B);
+for i=2:q
+    V(:,i) = p.A\V(:,i-1)/norm(p.A\V(:,i-1));
+end
+
+m = p;
+m.A = V'*p.A*V;
+m.B = V'*p.B;
+m.c = V'*p.c;
+
+Fr_jac = @(T,t) evalRedSysandJac(T,m,sigma);
+%forward function which evaluates our system and Jaobian
+
+xr_start = zeros(size(m.A,1),1); 
+
+tic;
+trap_xr = trap(xr_start,dt_trap,t_stop,Fr_jac,tolerances_newt);
+trapr_time = toc;
+y1 = m.c'*trap_xr;
+toc;
+norm(x_ref(:,end)-y1(:,end),1)
+
+Temperature_im=zeros(Nx,Ny);
+Temperature_im(brainmask)=y1(:,end);
+Temperature_ref=zeros(Nx,Ny);
+Temperature_ref(brainmask)=x_ref(:,end);
+figure;
+title('Reduced System: Moment Matching')
+h=imshow(Temperature_im);
+max_temp = max(max(Temperature_im(:,:,1)));
+set(h, 'AlphaData', Temperature_im(:,:,1)/max_temp);
+drawnow;
+figure;
+title('Full System')
+h=imshow(Temperature_ref);
+max_temp = max(max(Temperature_ref(:,:,1)));
+set(h, 'AlphaData', Temperature_ref(:,:,1)/max_temp);
+drawnow;
+
+%% 6) Demonstrate the TRAP solver for a Nonlinear Reduced System
+dt_trap=0.5;
+
+%Calculate V for the reduced system
+p.c=ones(size(p.B,1),1);
+p.c=diag(p.c);
+q=10;
+
+tic;
+mask_brain = p.mask(p.mask>0); 
+%Portions of the brain over which we simulate, will be 
+%N x 1.  Essentially we are picking out portion of mask
+%which just corresponds to decision voxels and not air.
+
+vessel_indices = find(mask_brain>2);
+%Indices corresponding to vessel voxels in the temperature
+%vector and the Jacobian Matrix
+
+vessel_mask = zeros(size(p.A));
+vessel_mask(vessel_indices) = 1; 
+%mask all places where we have a vessel 
+
+% We're going to linearize around 0, as our heat fluctuation around that
+% point will tend to be trivial.
+J = p.A;
+for ii = 1:length(vessel_indices)
+    vidx = vessel_indices(ii);
+    J(vidx,vidx) = J(vidx,vidx) + sigma .* 2;
+end
+
+V(:,1) = (J\p.B)/norm(J\p.B);
+for i=2:q
+    V(:,i) = J\V(:,i-1)/norm(J\V(:,i-1));
+end
+
+m = p;
+m.A = V'*J*V;
+m.B = V'*p.B;
+m.c = V'*p.c;
+
+%We're going to use the linear model everywhere but at the blood vessels
+Fr_jac = @(T,t) evalRedSysandJac(T,m,sigma);
+%forward function which evaluates our system and Jaobian
+
+xr_start = zeros(size(m.A,1),1); 
+
+tic;
+trap_xr = trap(xr_start,dt_trap,t_stop,Fr_jac,tolerances_newt);
+trapr_time = toc;
+y1 = trap_xr;
+y1 = m.c'*trap_xr;
+toc;
+norm(x_ref(:,end)-y1(:,end),1)
+
+Temperature_im=zeros(Nx,Ny);
+Temperature_im(brainmask)=y1(:,end);
+Temperature_ref=zeros(Nx,Ny);
+Temperature_ref(brainmask)=x_ref(:,end);
+figure;
+title('Reduced System: Nonlinear Approximation')
+h=imshow(Temperature_im);
+max_temp = max(max(Temperature_ref(:,:,1)));
 set(h, 'AlphaData', Temperature_im(:,:,1)/max_temp);
 drawnow;
 figure;
