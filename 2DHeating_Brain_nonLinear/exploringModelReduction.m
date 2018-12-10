@@ -119,7 +119,7 @@ dt_trap=0.5;
 %Calculate the reduced system
 p.c=ones(size(p.B,1),1);
 p.c=diag(p.c);
-q=5;
+q=2;
 tic;
 syst = ss(p.A, p.B, p.c', 0);
 systred = reduce(syst, q);
@@ -230,7 +230,7 @@ vessel_mask(vessel_indices) = 1;
 J = p.A;
 for ii = 1:length(vessel_indices)
     vidx = vessel_indices(ii);
-    J(vidx,vidx) = J(vidx,vidx) + sigma .* 2;
+    J(vidx,vidx) = J(vidx,vidx) + p.dx2*sigma* 2;
 end
 
 V(:,1) = (J\p.B)/norm(J\p.B);
