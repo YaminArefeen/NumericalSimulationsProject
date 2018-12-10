@@ -36,4 +36,6 @@ Consider any other method discussed in class. We elected to implement alternativ
 `2DHeating_Brain_POD` contain code to perform proper othogonal decomposition (POD) analysis on the linear system; a strategy that was ultimately was used to generate demonstration material.
 
 `Simulation_Tumor_Thermal_Therapy` contains demonstration material. `demo_Tumor_Heating_final.m` is the relevant script.
+demo_Tumor_Heating_final.m
 
+`BrainTumors-codes-compact` contains the demonstration codes for the presentation material. `demo_Tumor_Heating_final.m` is the demo scrpti.
