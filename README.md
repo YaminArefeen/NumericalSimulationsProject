@@ -38,4 +38,4 @@ Consider any other method discussed in class. We elected to implement alternativ
 `Simulation_Tumor_Thermal_Therapy` contains demonstration material. `demo_Tumor_Heating_final.m` is the relevant script.
 demo_Tumor_Heating_final.m
 
-`BrainTumors-codes-compact` contains the demonstration codes for the presentation material. `demo_Tumor_Heating_final.m` is the demo scrpti.
+`BrainTumors-codes-compact` contains the demonstration codes for the presentation material. `demo_Tumor_Heating_final.m` is the demo script.
